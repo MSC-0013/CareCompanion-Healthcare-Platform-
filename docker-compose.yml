@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  carecompanion-app:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      # --- CORRECTED LINE ---
+      # This links your local 'backend/model' folder to the container's '/app/model' folder.
+      - ./backend/model:/app/model
+    environment:
+      - NODE_ENV=development
