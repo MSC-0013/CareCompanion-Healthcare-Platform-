@@ -1,75 +1,158 @@
-# Welcome to your Lovable project
+🏥 CareCompanion — AI-Powered Healthcare & Wellness Platform
 
-## Project info
+CareCompanion is a full-stack AI healthcare management web application built with the MERN stack + Python AI backend.
+It empowers users to track, analyze, and optimize their health through intelligent insights, personalized care plans, and lifestyle management — all within a beautifully designed interface.
 
-**URL**: https://lovable.dev/projects/e6e8e271-1ec8-4ce9-a14a-209a99a2e8e0
+🎯 Repository: CareCompanion-Healthcare-Platform
 
-## How can I edit this code?
+🚀 Frontend: React + Vite + Tailwind
+🧠 Backend: Node.js + Express + MongoDB + Python AI
 
-There are several ways of editing your application.
+📁 Project Structure
+<pre> 🏥 CareCompanion/ ├── ⚙️ .env # 🔐 Environment configuration (frontend + backend) ├── 🧠 backend/ # 🧩 Express.js + Python hybrid backend │ ├── 📄 server.js # 🚀 Express entry point │ ├── 🧩 controllers/ # 🧠 Business logic (auth, profile, subscription) │ ├── 🛡️ middleware/ # 🔒 Authentication & validation middleware │ ├── 🧬 models/ # 🩸 MongoDB Schemas (User, Profile, Subscription) │ ├── 🧭 routes/ # 🗺️ API Routes (auth, profile, ai, subscription) │ ├── 🤖 ai_handler.py # 🧬 Python ML/AI handler for intelligent insights │ └── 📦 package.json # Backend dependencies │ ├── 💻 src/ # 🎨 React + TypeScript frontend │ ├── 📂 components/ # 🧱 Reusable UI components (Navbar, Cards, etc.) │ ├── 🧩 contexts/ # 🔄 Auth context + global state management │ ├── 🪝 hooks/ # 🧠 Custom hooks (useToast, useMobile) │ ├── ⚙️ lib/ # 🔧 API & Auth utilities (JWT, Axios) │ ├── 📄 pages/ # 📋 App pages (Home, Chat, Profile, Auth, Plans) │ ├── 🎨 styles/ # 💅 Tailwind styling & global CSS │ ├── 🧠 App.tsx # 🧩 App routing and layout │ └── 🧠 main.tsx # 🪶 Vite + React entry point │ ├── 🖼️ public/ # 🌐 Public assets (favicon, logos, dataset CSV) ├── 🐳 Dockerfile # 🧰 Docker setup for deployment ├── ⚙️ vite.config.ts # ⚡ Vite + proxy configuration ├── 📦 package.json # 🧩 Project metadata & dependencies └── 📝 README.md # 📘 Project documentation </pre>
+🧰 Tech Stack
+Tech / Tool	Purpose
+React.js + TypeScript	Frontend UI framework
+Vite	Lightning-fast dev environment
+Tailwind CSS	Modern, responsive styling
+shadcn/ui + Lucide	Beautiful, accessible UI components
+Express.js	Node.js backend & API routing
+MongoDB (Mongoose)	NoSQL database for profiles & users
+JWT Auth	Secure login & route protection
+bcrypt.js	Encrypted password handling
+Python (Flask/FastAPI)	AI health insights module
+Render / Vercel	Deployment (Backend + Frontend)
+✨ Features Overview
+👤 User Authentication
 
-**Use Lovable**
+Register, login, and logout securely via JWT
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/e6e8e271-1ec8-4ce9-a14a-209a99a2e8e0) and start prompting.
+Persistent sessions with local storage token
 
-Changes made via Lovable will be committed automatically to this repo.
+Email verification & password management
 
-**Use your preferred IDE**
+🧍 Profile Management
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Add or update personal, health, and lifestyle data
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+Medication tracking with CRUD features
 
-Follow these steps:
+Profile completion tracker (progress % displayed)
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+Emergency contact & bio details
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+💊 Health & Lifestyle Tracking
 
-# Step 3: Install the necessary dependencies.
-npm i
+Log allergies, medical history, and current conditions
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+Track exercise, diet, and habits dynamically
+
+AI-assisted lifestyle recommendations
+
+🧠 AI-Powered Healthcare Assistant
+
+Integrated Python AI engine (ai_handler.py)
+
+Generates health recommendations and predictions
+
+Future-ready ML model integration for symptoms → diagnosis
+
+💬 Smart Chat Interface
+
+Real-time AI chat for medical queries
+
+Context-aware responses powered by backend AI module
+
+💸 Subscription Plans
+
+Plan tiers: Free, Pro, and Ultimate
+
+Role-based access (user, admin, doctor)
+
+Automatic plan expiration and validation
+
+🏥 Dashboard & Insights
+
+Health completion score visualized
+
+AI-generated personalized summaries
+
+Upcoming appointments (future expansion)
+
+🔐 Security
+
+JWT token validation on every protected route
+
+Account deactivation & reactivation logic
+
+Environment-based configuration for production safety
+
+🚀 Deployment
+
+Frontend — Vercel
+Backend — Render
+Database — MongoDB Atlas
+
+Add this to your .env files:
+
+🧩 Backend .env
+MONGO_URI=your_mongodb_connection_string
+JWT_SECRET=your_jwt_secret_key
+PORT=5000
+
+⚙️ Frontend .env
+VITE_API_URL=https://your-render-backend.onrender.com
+
+🛠️ Getting Started
+1️⃣ Clone Repository
+git clone https://github.com/MSC-0013/CareCompanion-Healthcare-Platform-.git
+cd CareCompanion-Healthcare-Platform-
+
+2️⃣ Setup Backend
+cd backend
+npm install
+npm start
+
+3️⃣ Setup Frontend
+cd ..
+npm install
 npm run dev
-```
 
-**Edit a file directly in GitHub**
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Visit 👉 http://localhost:8080
 
-**Use GitHub Codespaces**
+📊 API Routes Overview
+Endpoint	Method	Description
+/api/auth/register	POST	Register a new user
+/api/auth/login	POST	Authenticate user
+/api/auth/me	GET	Get logged-in user
+/api/profile/	GET/PUT	Get or update profile
+/api/profile/medications	POST/PUT/DELETE	Manage medications
+/api/subscription/	GET/PUT	Manage subscription plans
+/api/ai/predict	POST	Get AI-generated health insights
+🧠 Future Roadmap
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+🩺 Integration with wearable health devices (Fitbit, Apple Watch)
 
-## What technologies are used for this project?
+📈 AI-based health prediction graphs
 
-This project is built with:
+🧬 Personalized nutrition and workout recommendation system
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+💬 Doctor–Patient chat module
 
-## How can I deploy this project?
+📲 Mobile-friendly PWA version
 
-Simply open [Lovable](https://lovable.dev/projects/e6e8e271-1ec8-4ce9-a14a-209a99a2e8e0) and click on Share -> Publish.
+👤 Author
 
-## Can I connect a custom domain to my Lovable project?
+Soumyashree Rout
+🔗 GitHub: @MSC-0013
 
-Yes, you can!
+🌐 Portfolio: https://port-folio-tau-coral.vercel.app
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+📧 Email: soumyashreerout99@gmail.com
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
-# CareCompanion
-# CareCompanion-Healthcare-Platform-
+💼 LinkedIn: Soumyashree Rout
+
+🧭 License
+
+This project is licensed under the MIT License — feel free to use and build upon it.
