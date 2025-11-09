@@ -270,16 +270,49 @@ const Chat = () => {
     let response = `🌿 **Detailed Medical Insights**\n\n`;
 
     matches.slice(0, 4).forEach((r) => {
-      response += `🔹 **${r.disease || "Unknown Disease"}**\n\n`;
+      // 🧩 Normalize and gracefully handle missing / case variations
+      const name = r.disease || r.Disease || "Unknown Disease";
+      const overview = r.overview || r.Overview || "No overview available.";
+      const symptoms = r.symptoms || r.Symptoms || "Not listed.";
+      const treatment = r.treatment || r.Treatment || "No treatment data.";
+      const medications =
+        r.medications || r.medication || r.Medications || "No medicines listed.";
+      const cautions =
+        r.cautions || r.causes || r.Caution || r.Causes || "No caution info.";
+      const prevention =
+        r.prevention || r.Prevention || "No prevention info.";
 
-      response += `📘 **Overview:**\n${r.overview || "No overview available."}\n\n`;
-      response += `🩺 **Symptoms:**\n${r.symptoms || "Not listed."}\n\n`;
-      response += `💊 **Treatment:**\n${r.treatment || "No treatment data."}\n\n`;
-      response += `💊 **Medications:**\n${r.medication || "No medicines listed."}\n\n`;
-      response += `🧬 **Causes:**\n${r.causes || "Unknown."}\n\n`;
-      response += `🛡️ **Prevention:**\n${r.prevention || "No prevention info."}\n\n`;
-      response += `──────────────────────────────\n\n`; // adds a nice divider line between multiple diseases
+      // 🎨 Add better emojis, spacing, and hierarchy for readability
+      matches.slice(0, 4).forEach((r) => {
+        // Normalize fields safely
+        const name = r.disease || r.Disease || "Unknown Disease";
+        const overview = r.overview || r.Overview || "No overview available.";
+        const symptoms = r.symptoms || r.Symptoms || "Not listed.";
+        const treatment = r.treatment || r.Treatment || "No treatment data.";
+        const medications =
+          r.medications || r.medication || r.Medications || "No medicines listed.";
+        const cautions =
+          r.cautions || r.causes || r.Caution || r.Causes || "No caution info.";
+        const prevention =
+          r.prevention || r.Prevention || "No prevention info.";
+
+        // 🪄 Elegant Markdown layout with smooth dividers and section style
+        response += `🌿 **Detailed Medical Insights**\n\n`;
+        response += `💠 **${name.toUpperCase()}** 💠\n`;
+        response += `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+
+        response += `📘 **Overview:** ${overview}\n\n`;
+        response += `🩺 **Symptoms:** ${symptoms}\n\n`;
+        response += `💊 **Treatment:** ${treatment}\n\n`;
+        response += `💉 **Medications:** ${medications}\n\n`;
+        response += `⚠️ **Cautions:** ${cautions}\n\n`;
+        response += `🛡️ **Prevention:** ${prevention}\n\n`;
+
+        response += `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n`;
+      });
+
     });
+
 
     response +=
       "⚕️ **Disclaimer:** This info is educational only. Always consult a licensed doctor for accurate medical advice.";
