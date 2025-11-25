@@ -5,6 +5,7 @@ import { getReminders, type Reminder } from '@/lib/db';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useAuth } from "@/contexts/AuthContext";
 import {
   MessageSquare,
   Calendar,
@@ -28,7 +29,7 @@ const healthTips = [
 ];
 
 const Home = () => {
-  const user = getCurrentUser();
+  const { user } = useAuth();
   const [nextReminder, setNextReminder] = useState<Reminder | null>(null);
   const [dailyTip] = useState(() => healthTips[Math.floor(Math.random() * healthTips.length)]);
 
