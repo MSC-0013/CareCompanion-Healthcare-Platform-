@@ -180,9 +180,18 @@ const Profile = () => {
     try {
       setIsLoading(true);
       const response = await apiService.getProfile();
+
       if (response.success) {
-        setProfile(response.data.profile);
+        let p = response.data;
+
+        // ⭐ FIX: Normalize dateOfBirth to yyyy-MM-dd
+        if (p.personalInfo?.dateOfBirth) {
+          p.personalInfo.dateOfBirth = p.personalInfo.dateOfBirth.split("T")[0];
+        }
+
+        setProfile(p);
       }
+
     } catch (error: any) {
       console.error('Failed to load profile:', error);
       toast.error('Failed to load profile');
@@ -194,41 +203,64 @@ const Profile = () => {
   const saveProfile = async (section: string, data: any) => {
     try {
       setIsSaving(true);
+
+      // Remove empty strings so backend doesn't receive invalid values
+      const cleanData = JSON.parse(JSON.stringify(data, (key, value) => {
+        if (value === "" || value === null) return undefined;
+        return value;
+      }));
+
       let response;
 
       switch (section) {
-        case 'personal':
-          response = await apiService.updatePersonalInfo(data);
+        case "personal":
+          response = await apiService.updatePersonalInfo(cleanData);
           break;
-        case 'health':
-          response = await apiService.updateHealthInfo(data);
+        case "health":
+          response = await apiService.updateHealthInfo(cleanData);
           break;
-        case 'lifestyle':
-          response = await apiService.updateLifestyle(data);
+        case "lifestyle":
+          response = await apiService.updateLifestyle(cleanData);
           break;
         default:
-          response = await apiService.updateProfile(data);
+          response = await apiService.updateProfile(cleanData);
       }
 
       if (response.success) {
-        setProfile(prev => ({
-          ...prev,
-          ...response.data
-        }));
-        toast.success('Profile updated successfully');
+        setProfile(prev => {
+          const updated = { ...prev, ...response.data };
+
+          // ⭐ FIX DATE FORMAT AFTER SAVE
+          if (updated.personalInfo?.dateOfBirth) {
+            updated.personalInfo.dateOfBirth =
+              updated.personalInfo.dateOfBirth.split("T")[0];
+          }
+
+          return updated;
+        });
+
+        toast.success("Profile updated successfully");
       }
-    } catch (error: any) {
-      console.error('Failed to save profile:', error);
-      toast.error('Failed to save profile');
+
+
+    } catch (err) {
+      console.error("Save profile error:", err);
+      toast.error("Failed to save profile");
     } finally {
       setIsSaving(false);
     }
   };
 
+
   const addMedication = async () => {
     try {
       setIsSaving(true);
-      const response = await apiService.addMedication(newMedication);
+      const cleaned = JSON.parse(JSON.stringify(newMedication, (key, value) => {
+        if (value === "" || value === null) return undefined;
+        return value;
+      }));
+
+      const response = await apiService.addMedication(cleaned);
 
       if (response.success) {
         setProfile(prev => ({
@@ -392,13 +424,16 @@ const Profile = () => {
                       <Input
                         id="lastName"
                         value={profile?.personalInfo?.lastName || ''}
-                        onChange={(e) => setProfile(prev => ({
-                          ...prev,
-                          personalInfo: {
-                            ...prev?.personalInfo,
-                            lastName: e.target.value
-                          }
-                        }))}
+                        onChange={(e) =>
+                          setProfile(prev => ({
+                            ...prev,
+                            personalInfo: {
+                              ...prev?.personalInfo,
+                              lastName: e.target.value,
+                            }
+                          }))
+                        }
+
                         placeholder="Enter your last name"
                       />
                     </div>
@@ -408,15 +443,20 @@ const Profile = () => {
                       <Input
                         id="dateOfBirth"
                         type="date"
+                        max={new Date().toISOString().split("T")[0]}
                         value={profile?.personalInfo?.dateOfBirth || ''}
-                        onChange={(e) => setProfile(prev => ({
-                          ...prev,
-                          personalInfo: {
-                            ...prev?.personalInfo,
-                            dateOfBirth: e.target.value
-                          }
-                        }))}
+                        onChange={(e) =>
+                          setProfile(prev => ({
+                            ...prev,
+                            personalInfo: {
+                              ...prev?.personalInfo,
+                              dateOfBirth: e.target.value,
+                            }
+                          }))
+                        }
+
                       />
+
                     </div>
 
                     <div>

@@ -75,40 +75,91 @@ const updateProfile = async (req, res) => {
 // @desc    Update personal info
 // @route   PUT /api/profile/personal
 // @access  Private
+// @desc    Update personal info
+// @route   PUT /api/profile/personal
+// @access  Private
 const updatePersonalInfo = async (req, res) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({
-        success: false,
-        message: 'Validation failed',
-        errors: errors.array(),
-      });
+    console.log("📥 Incoming personal info:", req.body);
+
+    // Clone clean values
+    let newInfo = { ...req.body };
+
+    // -------------------------------
+    // ✅ FIXED DATE VALIDATION
+    // -------------------------------
+    if (newInfo.dateOfBirth) {
+      console.log("📌 Raw DOB:", newInfo.dateOfBirth);
+      const parsed = new Date(newInfo.dateOfBirth);
+
+      if (isNaN(parsed.getTime())) {
+        console.log("❌ DOB invalid");
+        return res.status(400).json({
+          success: false,
+          message: "Invalid date format",
+        });
+      }
+
+      newInfo.dateOfBirth = parsed;
     }
 
-    const newInfo = req.body;
+    // -------------------------------
+    // ✅ FIXED PHONE VALIDATION
+    // (allows numbers starting with 0 AND matches your model)
+    // -------------------------------
+    if (newInfo.phone) {
+      console.log("📌 Phone received:", newInfo.phone);
 
+      const phoneRegex = /^[+]?[0-9]{7,15}$/;  // ✔ Correct final regex
+
+      if (!phoneRegex.test(newInfo.phone)) {
+        console.log("❌ Phone format invalid!");
+        return res.status(400).json({
+          success: false,
+          message: "Invalid phone format",
+        });
+      }
+    }
+
+    // -------------------------------
+    // FIND OR CREATE PROFILE
+    // -------------------------------
     let profile = await Profile.findOne({ user: req.user.id });
-    if (!profile) profile = await Profile.create({ user: req.user.id });
 
-    // Merge new info with existing info
-    profile.personalInfo = { ...profile.personalInfo, ...newInfo };
+    if (!profile) {
+      console.log("⚠️ No profile found — creating a new one.");
+      profile = await Profile.create({ user: req.user.id });
+    }
+
+    // -------------------------------
+    // MERGE DATA SAFELY
+    // -------------------------------
+    profile.personalInfo = {
+      ...profile.personalInfo,
+      ...newInfo,
+    };
+
+    console.log("📌 Saving profile...");
     await profile.save();
 
-    res.json({
+    console.log("✅ Personal info updated successfully");
+
+    return res.json({
       success: true,
-      message: 'Personal information updated successfully',
       data: { personalInfo: profile.personalInfo },
     });
-  } catch (error) {
-    console.error('Update personal info error:', error);
+
+  } catch (err) {
+    console.error("🔥 SERVER CRASH:", err);
     res.status(500).json({
       success: false,
-      message: 'Server error updating personal info',
-      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error',
+      message: "Server error updating personal info",
+      error: err.message,
     });
   }
 };
+
+
 
 // @desc    Update lifestyle info (now persistent)
 // @route   PUT /api/profile/lifestyle
@@ -153,50 +204,38 @@ const updateLifestyle = async (req, res) => {
 // @access  Private
 const updateHealthInfo = async (req, res) => {
   try {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({
-        success: false,
-        message: 'Validation failed',
-        errors: errors.array(),
-      });
-    }
-
-    const { bio, height, weight, bloodType } = req.body;
+    const data = req.body;
 
     let profile = await Profile.findOne({ user: req.user.id });
     if (!profile) profile = await Profile.create({ user: req.user.id });
 
-    // Update bio if provided
-    if (bio !== undefined) profile.bio = bio;
+    // Avoid NaN crashes
+    if (data.height?.value && isNaN(Number(data.height.value))) {
+      return res.status(400).json({ success: false, message: "Invalid height" });
+    }
 
-    // ✅ Safely merge health info (no data loss)
+    if (data.weight?.value && isNaN(Number(data.weight.value))) {
+      return res.status(400).json({ success: false, message: "Invalid weight" });
+    }
+
     profile.healthInfo = {
       ...profile.healthInfo,
-      ...(height && { height }),
-      ...(weight && { weight }),
-      ...(bloodType && { bloodType }),
+      ...data,
     };
 
     await profile.save();
 
     res.json({
       success: true,
-      message: 'Health information updated successfully',
-      data: {
-        bio: profile.bio,
-        healthInfo: profile.healthInfo,
-      },
+      data: { healthInfo: profile.healthInfo }
     });
-  } catch (error) {
-    console.error('Update health info error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Server error updating health info',
-      error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error',
-    });
+
+  } catch (err) {
+    console.error("Update health info error:", err);
+    res.status(500).json({ success: false, message: "Server error updating health info" });
   }
 };
+
 
 // @desc    Add medication
 // @route   POST /api/profile/medications

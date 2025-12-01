@@ -158,13 +158,19 @@ class ApiService {
 
   // Profile methods
   async getProfile() {
-    return this.request<{
-      success: boolean;
-      data: {
-        profile: any;
-      };
-    }>("/profile");
-  }
+  return this.request<{
+    success: boolean;
+    data: {
+      personalInfo: any;
+      healthInfo: any;
+      lifestyle: any;
+      bio?: string;
+      isComplete: boolean;
+      completionPercentage: number;
+    };
+  }>("/profile");
+}
+
 
   async updateProfile(profileData: any) {
     return this.request<{

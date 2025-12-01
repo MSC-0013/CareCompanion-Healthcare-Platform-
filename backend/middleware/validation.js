@@ -44,32 +44,29 @@ const changePasswordValidation = [
 
 // Profile validation rules
 const personalInfoValidation = [
-  body('personalInfo.firstName')
+  body('firstName')
     .optional()
     .trim()
-    .isLength({ max: 30 })
-    .withMessage('First name cannot exceed 30 characters'),
-  
-  body('personalInfo.lastName')
+    .isLength({ max: 30 }),
+
+  body('lastName')
     .optional()
     .trim()
-    .isLength({ max: 30 })
-    .withMessage('Last name cannot exceed 30 characters'),
-  
-  body('personalInfo.dateOfBirth')
+    .isLength({ max: 30 }),
+
+  body('dateOfBirth')
     .optional()
-    .isISO8601()
-    .withMessage('Please provide a valid date'),
-  
-  body('personalInfo.gender')
+    .isISO8601(),
+
+  body('gender')
     .optional()
-    .isIn(['male', 'female', 'other', 'prefer-not-to-say'])
-    .withMessage('Invalid gender selection'),
-  
-  body('personalInfo.phone')
+    .isIn(['male', 'female', 'other', 'prefer-not-to-say']),
+
+  // ⭐ FIXED PHONE VALIDATION
+  body('phone')
     .optional()
-    .matches(/^[\+]?[1-9][\d]{0,15}$/)
-    .withMessage('Please provide a valid phone number')
+    .matches(/^[+]?[0-9]{7,15}$/)
+    .withMessage("Invalid phone format"),
 ];
 
 const healthInfoValidation = [
@@ -130,15 +127,10 @@ const medicationValidation = [
     .isString()
     .withMessage('Frequency must be a string'),
   
-  body('startDate')
-    .optional()
-    .isISO8601()
-    .withMessage('Please provide a valid start date'),
-  
-  body('endDate')
-    .optional()
-    .isISO8601()
-    .withMessage('Please provide a valid end date')
+  // Remove date validation since frontend does NOT use dates
+  body('startDate').optional(),
+  body('endDate').optional()
+
 ];
 // --- END OF CORRECTED SECTION ---
 
